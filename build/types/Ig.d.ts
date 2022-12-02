@@ -126,7 +126,7 @@ export interface Edges {
     };
     edges: Post[];
 }
-export declare type PostType = 'GraphSidecar' | 'GraphVideo' | 'GraphImage';
+export type PostType = 'GraphSidecar' | 'GraphVideo' | 'GraphImage';
 export interface Post {
     node: PostMeta;
 }

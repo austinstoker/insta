@@ -33,7 +33,7 @@ const INIT_OPTIONS = {
 };
 const proxyFromFile = async (file) => {
     try {
-        const data = (await bluebird_1.fromCallback((cb) => fs_1.readFile(file, { encoding: 'utf-8' }, cb)));
+        const data = (await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.readFile)(file, { encoding: 'utf-8' }, cb)));
         const proxyList = data.split('\n');
         if (!proxyList.length) {
             throw new Error('Proxy file is empty');
@@ -104,14 +104,21 @@ const promiseScraper = async (input, type, options) => {
     const result = await scraper.startScraper();
     return result;
 };
-exports.user = async (input, options) => promiseScraper(input, 'user', options);
-exports.hashtag = async (input, options) => promiseScraper(input, 'hashtag', options);
-exports.location = async (input, options) => promiseScraper(input, 'location', options);
-exports.comments = async (input, options) => promiseScraper(input, 'comments', options);
-exports.likers = async (input, options) => promiseScraper(input, 'likers', options);
-exports.followers = async (input, options) => promiseScraper(input, 'followers', options);
-exports.following = async (input, options) => promiseScraper(input, 'following', options);
-exports.getUserMeta = async (input, options) => {
+const user = async (input, options) => promiseScraper(input, 'user', options);
+exports.user = user;
+const hashtag = async (input, options) => promiseScraper(input, 'hashtag', options);
+exports.hashtag = hashtag;
+const location = async (input, options) => promiseScraper(input, 'location', options);
+exports.location = location;
+const comments = async (input, options) => promiseScraper(input, 'comments', options);
+exports.comments = comments;
+const likers = async (input, options) => promiseScraper(input, 'likers', options);
+exports.likers = likers;
+const followers = async (input, options) => promiseScraper(input, 'followers', options);
+exports.followers = followers;
+const following = async (input, options) => promiseScraper(input, 'following', options);
+exports.following = following;
+const getUserMeta = async (input, options) => {
     if (options && typeof options !== 'object') {
         throw new TypeError('Object is expected');
     }
@@ -121,7 +128,8 @@ exports.getUserMeta = async (input, options) => {
     const result = await scraper.getUserMeta(constructor.url);
     return result;
 };
-exports.getPostMeta = async (input, options) => {
+exports.getUserMeta = getUserMeta;
+const getPostMeta = async (input, options) => {
     if (options && typeof options !== 'object') {
         throw new TypeError('Object is expected');
     }
@@ -131,7 +139,8 @@ exports.getPostMeta = async (input, options) => {
     const result = await scraper.getPostMeta(constructor.url);
     return result;
 };
-exports.getStories = async (input, options) => {
+exports.getPostMeta = getPostMeta;
+const getStories = async (input, options) => {
     if (options && typeof options !== 'object') {
         throw new TypeError('Object is expected');
     }
@@ -142,7 +151,8 @@ exports.getStories = async (input, options) => {
     const result = await scraper.getStories(userMeta.graphql.user.id);
     return Object.assign(Object.assign({}, result), { id: userMeta.graphql.user.id });
 };
-exports.getUserReels = async (input, options) => {
+exports.getStories = getStories;
+const getUserReels = async (input, options) => {
     if (options && typeof options !== 'object') {
         throw new TypeError('Object is expected');
     }
@@ -153,11 +163,12 @@ exports.getUserReels = async (input, options) => {
     const result = await scraper.getUserReels(userMeta.graphql.user.id, constructor.count, constructor.endCursor);
     return result;
 };
-exports.history = async (input, options) => {
+exports.getUserReels = getUserReels;
+const history = async (input, options) => {
     let store;
-    const historyPath = process.env.SCRAPING_FROM_DOCKER ? '/usr/app/files' : (options === null || options === void 0 ? void 0 : options.historyPath) || os_1.tmpdir();
+    const historyPath = process.env.SCRAPING_FROM_DOCKER ? '/usr/app/files' : (options === null || options === void 0 ? void 0 : options.historyPath) || (0, os_1.tmpdir)();
     try {
-        store = (await bluebird_1.fromCallback((cb) => fs_1.readFile(`${historyPath}/ig_history.json`, { encoding: 'utf-8' }, cb)));
+        store = (await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.readFile)(`${historyPath}/ig_history.json`, { encoding: 'utf-8' }, cb)));
     }
     catch (error) {
         throw `History file doesn't exist`;
@@ -169,18 +180,18 @@ exports.history = async (input, options) => {
         if (type === 'all') {
             const remove = [];
             for (const key of Object.keys(historyStore)) {
-                remove.push(bluebird_1.fromCallback((cb) => fs_1.unlink(historyStore[key].file_location, cb)));
+                remove.push((0, bluebird_1.fromCallback)((cb) => (0, fs_1.unlink)(historyStore[key].file_location, cb)));
             }
-            remove.push(bluebird_1.fromCallback((cb) => fs_1.unlink(`${historyPath}/ig_history.json`, cb)));
+            remove.push((0, bluebird_1.fromCallback)((cb) => (0, fs_1.unlink)(`${historyPath}/ig_history.json`, cb)));
             await Promise.all(remove);
             return { message: `History was completely removed` };
         }
         const key = type !== 'trend' ? options.remove.replace(':', '_') : 'trend';
         if (historyStore[key]) {
             const historyFile = historyStore[key].file_location;
-            await bluebird_1.fromCallback((cb) => fs_1.unlink(historyFile, cb));
+            await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.unlink)(historyFile, cb));
             delete historyStore[key];
-            await bluebird_1.fromCallback((cb) => fs_1.writeFile(`${historyPath}/ig_history.json`, JSON.stringify(historyStore), cb));
+            await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(`${historyPath}/ig_history.json`, JSON.stringify(historyStore), cb));
             return { message: `Record ${key} was removed` };
         }
         throw `Can't find record: ${key.split('_').join(' ')}`;
@@ -191,15 +202,16 @@ exports.history = async (input, options) => {
     }
     return { table };
 };
+exports.history = history;
 const batchProcessor = (batch, options) => {
     return new Promise((resolve) => {
         console.log('Instagram Bulk Scraping Started');
         const result = [];
-        async_1.forEachLimit(batch, options.asyncBulk || 5, async (item) => {
+        (0, async_1.forEachLimit)(batch, options.asyncBulk || 5, async (item) => {
             switch (item.scrapeType) {
                 case 'user':
                     try {
-                        const output = await exports.user(item.input, Object.assign({ bulk: true }, options));
+                        const output = await (0, exports.user)(item.input, Object.assign({ bulk: true }, options));
                         result.push({ type: item.scrapeType, input: item.input, completed: true, scraped: output.collector.length });
                         console.log(`Scraping completed: ${item.scrapeType} ${item.input}`);
                     }
@@ -210,7 +222,7 @@ const batchProcessor = (batch, options) => {
                     break;
                 case 'hashtag':
                     try {
-                        const output = await exports.hashtag(item.input, Object.assign({ bulk: true }, options));
+                        const output = await (0, exports.hashtag)(item.input, Object.assign({ bulk: true }, options));
                         result.push({ type: item.scrapeType, input: item.input, completed: true, scraped: output.collector.length });
                         console.log(`Scraping completed: ${item.scrapeType} ${item.input}`);
                     }
@@ -221,7 +233,7 @@ const batchProcessor = (batch, options) => {
                     break;
                 case 'location':
                     try {
-                        const output = await exports.location(item.input, Object.assign({ bulk: true }, options));
+                        const output = await (0, exports.location)(item.input, Object.assign({ bulk: true }, options));
                         result.push({ type: item.scrapeType, input: item.input, completed: true, scraped: output.collector.length });
                         console.log(`Scraping completed: ${item.scrapeType} ${item.input}`);
                     }
@@ -232,7 +244,7 @@ const batchProcessor = (batch, options) => {
                     break;
                 case 'comments':
                     try {
-                        const output = await exports.comments(item.input, Object.assign({ bulk: true }, options));
+                        const output = await (0, exports.comments)(item.input, Object.assign({ bulk: true }, options));
                         result.push({ type: item.scrapeType, input: item.input, completed: true, scraped: output.collector.length });
                         console.log(`Scraping completed: ${item.scrapeType} ${item.input}`);
                     }
@@ -243,7 +255,7 @@ const batchProcessor = (batch, options) => {
                     break;
                 case 'likers':
                     try {
-                        const output = await exports.likers(item.input, Object.assign({ bulk: true }, options));
+                        const output = await (0, exports.likers)(item.input, Object.assign({ bulk: true }, options));
                         result.push({ type: item.scrapeType, input: item.input, completed: true, scraped: output.collector.length });
                         console.log(`Scraping completed: ${item.scrapeType} ${item.input}`);
                     }
@@ -260,10 +272,10 @@ const batchProcessor = (batch, options) => {
         });
     });
 };
-exports.fromfile = async (input, options) => {
+const fromfile = async (input, options) => {
     let inputFile;
     try {
-        inputFile = (await bluebird_1.fromCallback((cb) => fs_1.readFile(input, { encoding: 'utf-8' }, cb)));
+        inputFile = (await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.readFile)(input, { encoding: 'utf-8' }, cb)));
     }
     catch (error) {
         throw `Can't find fle: ${input}`;
@@ -313,3 +325,4 @@ exports.fromfile = async (input, options) => {
     const result = await batchProcessor(batch, options);
     return { table: result };
 };
+exports.fromfile = fromfile;

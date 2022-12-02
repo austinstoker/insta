@@ -1,7 +1,7 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { Edges } from './Ig';
-export declare type ScrapeType = 'user' | 'hashtag' | 'location' | 'comments' | 'likers' | 'followers' | 'following' | 'user_meta' | 'post_meta' | 'stories';
-export declare type MediaType = 'image' | 'video' | 'all';
+export type ScrapeType = 'user' | 'hashtag' | 'location' | 'comments' | 'likers' | 'followers' | 'following' | 'user_meta' | 'post_meta' | 'stories';
+export type MediaType = 'image' | 'video' | 'all';
 export interface Proxy {
     socks: boolean;
     proxy: string | SocksProxyAgent;

@@ -13,5 +13,5 @@ export declare class Downloader {
     private get getProxy();
     addBar(len: number): any[];
     toBuffer(item: PostCollector): Promise<Buffer>;
-    downloadPosts({ zip, folder, collector, fileName, asyncDownload }: ZipValues): Promise<unknown>;
+    downloadPosts({ zip, folder, collector, fileName, asyncDownload }: ZipValues): Promise<void>;
 }

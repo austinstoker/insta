@@ -122,7 +122,7 @@ export class Downloader {
      * Download and ZIP video files
      */
     public downloadPosts({ zip, folder, collector, fileName, asyncDownload }: ZipValues) {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             const saveDestination = zip ? `${fileName}.zip` : folder;
             const archive = archiver('zip', {
                 gzip: true,

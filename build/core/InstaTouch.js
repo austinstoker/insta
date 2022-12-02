@@ -37,10 +37,10 @@ class InstaTouch {
         this.asyncDownload = asyncDownload;
         this.collector = [];
         this.itemCount = 0;
-        this.spinner = ora_1.default('InstaTouch Scraper Started');
-        this.historyPath = process.env.SCRAPING_FROM_DOCKER ? '/usr/app/files' : historyPath || os_1.tmpdir();
-        this.bulk = bulk ? true : itemCount > 50;
-        this.csrfToken = helpers_1.randomString(29);
+        this.spinner = (0, ora_1.default)('InstaTouch Scraper Started');
+        this.historyPath = process.env.SCRAPING_FROM_DOCKER ? '/usr/app/files' : historyPath || (0, os_1.tmpdir)();
+        this.bulk = bulk;
+        this.csrfToken = (0, helpers_1.randomString)(29);
         this.Downloader = new _1.Downloader({
             progress,
             proxy,
@@ -90,7 +90,7 @@ class InstaTouch {
             const options = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({ uri,
                 method }, (qs ? { qs } : {})), (body ? { body } : {})), (form ? { form } : {})), { headers: Object.assign(Object.assign(Object.assign({ 'User-Agent': this.userAgent, Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 'Accept-Encoding': 'gzip, deflate, br', 'Accept-Language': 'en-US,en;q=0.5', 'Upgrade-Insecure-Requests': 1 }, (session ? { cookie: session } : {})), headers), this.headers) }), (json ? { json: true } : {})), (gzip ? { gzip: true } : {})), { resolveWithFullResponse: true }), (proxy.proxy && proxy.socks ? { agent: proxy.proxy } : {})), (proxy.proxy && !proxy.socks ? { proxy: `http://${proxy.proxy}/` } : {}));
             try {
-                const response = await request_promise_1.default(options);
+                const response = await (0, request_promise_1.default)(options);
                 if (response.headers['content-type'].indexOf('text/html') > -1) {
                     if (response.body.indexOf('AuthLogin') > -1) {
                         this.auth_error = true;
@@ -148,7 +148,7 @@ class InstaTouch {
         }
         if (this.download && !this.zip) {
             try {
-                await bluebird_1.fromCallback((cb) => fs_1.mkdir(this.folderDestination, { recursive: true }, cb));
+                await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.mkdir)(this.folderDestination, { recursive: true }, cb));
             }
             catch (error) {
                 return this.returnInitError(error.message);
@@ -224,15 +224,15 @@ class InstaTouch {
             if (this.collector.length) {
                 switch (this.filetype) {
                     case 'json':
-                        await bluebird_1.fromCallback((cb) => fs_1.writeFile(json, JSON.stringify(this.collector), cb));
+                        await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(json, JSON.stringify(this.collector), cb));
                         break;
                     case 'csv':
-                        await bluebird_1.fromCallback((cb) => fs_1.writeFile(csv, this.json2csvParser.parse(this.collector), cb));
+                        await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(csv, this.json2csvParser.parse(this.collector), cb));
                         break;
                     case 'all':
                         await Promise.all([
-                            await bluebird_1.fromCallback((cb) => fs_1.writeFile(json, JSON.stringify(this.collector), cb)),
-                            await bluebird_1.fromCallback((cb) => fs_1.writeFile(csv, this.json2csvParser.parse(this.collector), cb)),
+                            await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(json, JSON.stringify(this.collector), cb)),
+                            await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(csv, this.json2csvParser.parse(this.collector), cb)),
                         ]);
                         break;
                     default:
@@ -510,7 +510,7 @@ class InstaTouch {
     }
     collectPosts(edges) {
         return new Promise((resolve) => {
-            async_1.forEachLimit(edges, 5, (post, cb) => {
+            (0, async_1.forEachLimit)(edges, 5, (post, cb) => {
                 switch (this.scrapeType) {
                     case 'user':
                     case 'hashtag':
@@ -594,7 +594,7 @@ class InstaTouch {
         if (this.storeValue) {
             let history = {};
             try {
-                const readFromStore = (await bluebird_1.fromCallback((cb) => fs_1.readFile(`${this.historyPath}/ig_history.json`, { encoding: 'utf-8' }, cb)));
+                const readFromStore = (await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.readFile)(`${this.historyPath}/ig_history.json`, { encoding: 'utf-8' }, cb)));
                 history = JSON.parse(readFromStore);
             }
             catch (error) {
@@ -617,7 +617,7 @@ class InstaTouch {
             }
             let store;
             try {
-                const readFromStore = (await bluebird_1.fromCallback((cb) => fs_1.readFile(`${this.historyPath}/ig_${this.storeValue}.json`, { encoding: 'utf-8' }, cb)));
+                const readFromStore = (await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.readFile)(`${this.historyPath}/ig_${this.storeValue}.json`, { encoding: 'utf-8' }, cb)));
                 store = JSON.parse(readFromStore);
             }
             catch (error) {
@@ -641,12 +641,12 @@ class InstaTouch {
                 file_location: `${this.historyPath}/ig_${this.storeValue}.json`,
             };
             try {
-                await bluebird_1.fromCallback((cb) => fs_1.writeFile(`${this.historyPath}/ig_${this.storeValue}.json`, JSON.stringify(store), cb));
+                await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(`${this.historyPath}/ig_${this.storeValue}.json`, JSON.stringify(store), cb));
             }
             catch (error) {
             }
             try {
-                await bluebird_1.fromCallback((cb) => fs_1.writeFile(`${this.historyPath}/ig_history.json`, JSON.stringify(history), cb));
+                await (0, bluebird_1.fromCallback)((cb) => (0, fs_1.writeFile)(`${this.historyPath}/ig_history.json`, JSON.stringify(history), cb));
             }
             catch (error) {
             }

@@ -159,7 +159,7 @@ export class InstaTouch {
         this.itemCount = 0;
         this.spinner = ora('InstaTouch Scraper Started');
         this.historyPath = process.env.SCRAPING_FROM_DOCKER ? '/usr/app/files' : historyPath || tmpdir();
-        this.bulk = bulk ? true : itemCount>50;
+        this.bulk = bulk;
         this.csrfToken = randomString(29);
         this.Downloader = new Downloader({
             progress,

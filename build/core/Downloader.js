@@ -89,15 +89,15 @@ class Downloader {
     downloadPosts({ zip, folder, collector, fileName, asyncDownload }) {
         return new Promise((resolve, reject) => {
             const saveDestination = zip ? `${fileName}.zip` : folder;
-            const archive = archiver_1.default('zip', {
+            const archive = (0, archiver_1.default)('zip', {
                 gzip: true,
                 zlib: { level: 9 },
             });
             if (zip) {
-                const output = fs_1.createWriteStream(saveDestination);
+                const output = (0, fs_1.createWriteStream)(saveDestination);
                 archive.pipe(output);
             }
-            async_1.forEachLimit(collector, asyncDownload, (item, cb) => {
+            (0, async_1.forEachLimit)(collector, asyncDownload, (item, cb) => {
                 this.toBuffer(item)
                     .then(async (buffer) => {
                     item.downloaded = true;
@@ -105,7 +105,7 @@ class Downloader {
                         archive.append(buffer, { name: `${item.is_video ? `${item.shortcode}.mp4` : `${item.shortcode}.jpeg`}` });
                     }
                     else {
-                        await bluebird_1.fromCallback((cback) => fs_1.writeFile(`${saveDestination}/${item.is_video ? `${item.shortcode}.mp4` : `${item.shortcode}.jpeg`}`, buffer, cback));
+                        await (0, bluebird_1.fromCallback)((cback) => (0, fs_1.writeFile)(`${saveDestination}/${item.is_video ? `${item.shortcode}.mp4` : `${item.shortcode}.jpeg`}`, buffer, cback));
                     }
                     cb(null);
                 })
